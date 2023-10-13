@@ -50,7 +50,7 @@ df['Embed_sentence'] = df['Final Reviews'].apply(lambda x: embed(x, model))
 Brand = ['HP', 'Canon', 'Epson']
 
 st.header("Find related reviews")
-st.write("Type keywords or select a topic to find related reviews.")
+st.write("Select a topic to find related reviews.")
 
 brand = st.selectbox("Select Brand", Brand)
 
@@ -75,8 +75,9 @@ if key_words == "":
 else:
     input_keywords = ""
 
+with st.expander('Or type your own key words'):
+    input_keywords = st.text_input('Type Keywords')
 rating = st.selectbox("Select Rating", Rating)
-input_keywords = st.text_input('Type Keywords')
 apply_button = st.button('Apply')
 
 
@@ -95,6 +96,6 @@ if apply_button:
         df_new = df.sort_values(by='similarity', ascending=False)
         columns = ['Brand', 'Review Model', 'Review rating', 'Review Content']
         df_select = df_new[columns]
-        df_final = df_select[(df_select['Brand'] == brand) | (df_select['Review rating'] == rating)].head(4).reset_index(drop=True)
+        df_final = df_select[(df_select['Brand'] == brand) & (df_select['Review rating'] == rating)].head(4).reset_index(drop=True)
         df_final = df_final.drop_duplicates()
         st.dataframe(df_final)
